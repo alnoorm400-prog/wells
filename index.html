@@ -1,0 +1,516 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>آبار المحطة السابعة</title>
+    <meta name="theme-color" content="#0b2545">
+    <style>
+        :root {
+            --primary: #0b2545;
+            --secondary: #134074;
+            --accent: #ffb703;
+            --success: #28a745;
+            --danger: #dc3545;
+            --warning: #fd7e14;
+            --info: #17a2b8;
+            --bg: #f4f6f9;
+        }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--bg);
+            margin: 0;
+            padding: 0;
+            color: #333;
+            -webkit-tap-highlight-color: transparent;
+        }
+        .auth-page {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px;
+            box-sizing: border-box;
+            min-height: 100vh;
+        }
+        .logo-container {
+            background-color: var(--primary);
+            width: 70px;
+            height: 70px;
+            border-radius: 25px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-top: 20px;
+            margin-bottom: 15px;
+        }
+        .auth-title {
+            color: #000;
+            font-size: 24px;
+            font-weight: bold;
+            margin: 0 0 5px 0;
+        }
+        .auth-card {
+            background: white;
+            padding: 25px 20px;
+            border-radius: 20px;
+            width: 100%;
+            max-width: 420px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.03);
+            border: 1px solid #e2e8f0;
+            box-sizing: border-box;
+        }
+        .tab-container {
+            display: flex;
+            background-color: #f1f5f9;
+            padding: 5px;
+            border-radius: 12px;
+            margin-bottom: 25px;
+        }
+        .tab {
+            flex: 1;
+            text-align: center;
+            padding: 10px;
+            font-weight: bold;
+            cursor: pointer;
+            border-radius: 10px;
+            color: #64748b;
+        }
+        .tab.active {
+            background-color: white;
+            color: var(--primary);
+            box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+        }
+        .form-group {
+            margin-bottom: 18px;
+            text-align: right;
+        }
+        .input-control {
+            width: 100%;
+            padding: 14px;
+            border: 1px solid #cbd5e1;
+            border-radius: 12px;
+            box-sizing: border-box;
+            font-size: 16px;
+        }
+        .btn-submit {
+            width: 100%;
+            padding: 15px;
+            background-color: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+        .designer-credit {
+            margin-top: 25px;
+            font-size: 14px;
+            color: #134074;
+            font-weight: bold;
+            text-align: center;
+            border-top: 1px dashed #cbd5e1;
+            padding-top: 15px;
+            width: 100%;
+        }
+        .main-page {
+            display: none;
+            max-width: 500px;
+            margin: 0 auto;
+            background-color: #f4f6f9;
+            min-height: 100vh;
+        }
+        .app-header {
+            background-color: #0c2d48;
+            color: white;
+            padding: 20px 15px;
+            border-bottom-left-radius: 25px;
+            border-bottom-right-radius: 25px;
+            position: relative;
+        }
+        .btn-logout {
+            position: absolute;
+            top: 20px;
+            right: 15px;
+            background: rgba(255,255,255,0.15);
+            border: none;
+            color: white;
+            padding: 8px 16px;
+            border-radius: 12px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+        .header-title {
+            margin: 0;
+            font-size: 22px;
+            font-weight: bold;
+            text-align: center;
+        }
+        .approval-panel {
+            background-color: #fef08a;
+            border: 1.5px solid #eab308;
+            border-radius: 15px;
+            margin: 15px;
+            padding: 15px;
+            display: none;
+        }
+        .approval-item {
+            background: white;
+            padding: 10px;
+            border-radius: 10px;
+            margin-top: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        }
+        .btn-approve { background: var(--success); color: white; border: none; padding: 5px 12px; border-radius: 6px; cursor: pointer; font-weight: bold; margin-left: 5px;}
+        .btn-reject { background: var(--danger); color: white; border: none; padding: 5px 12px; border-radius: 6px; cursor: pointer; font-weight: bold; }
+        .search-wrapper { padding: 15px; }
+        .search-container-box {
+            background: white;
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            padding: 5px 15px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+        }
+        .search-input { width: 100%; border: none; padding: 12px 5px; font-size: 16px; outline: none; text-align: right; }
+        .abc-badge { background: #f0f2f5; padding: 6px 12px; border-radius: 8px; font-weight: bold; }
+        .filter-tabs { display: flex; padding: 0 15px; gap: 6px; overflow-x: auto; scrollbar-width: none; }
+        .filter-tabs::-webkit-scrollbar { display: none; }
+        .btn-filter {
+            background-color: white;
+            color: #0c2d48;
+            border: 1.5px solid #0c2d48;
+            padding: 8px 14px;
+            border-radius: 20px;
+            font-size: 13px;
+            font-weight: bold;
+            cursor: pointer;
+            white-space: nowrap;
+        }
+        .btn-filter.active { background-color: #0c2d48; color: white; }
+        .wells-count-text { text-align: left; padding: 10px 20px 0 20px; font-size: 14px; color: #666; font-weight: bold; }
+        .wells-list-wrapper { padding: 10px 15px 100px 15px; }
+        .well-item {
+            background-color: white;
+            border-radius: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.03);
+            overflow: hidden;
+        }
+        .well-item.status-حقن { border-right: 6px solid var(--info); }
+        .well-item.status-معزول { border-right: 6px solid var(--danger); }
+        .well-item.status-فلاشنك { border-right: 6px solid var(--warning); }
+        .well-right-side { display: flex; align-items: center; gap: 12px; padding: 15px; flex-grow: 1; justify-content: flex-end; }
+        .well-title-text { font-size: 20px; font-weight: bold; color: #111; }
+        .badge-status { padding: 6px 14px; border-radius: 20px; font-size: 13px; font-weight: bold; cursor: pointer; }
+        .badge-حقن { background-color: #e0f2fe; color: var(--info); }
+        .badge-معزول { background-color: #ffe4e6; color: var(--danger); }
+        .badge-فلاشنك { background-color: #fff7ed; color: var(--warning); }
+        .btn-navigate {
+            background-color: #0c2d48;
+            color: white;
+            border: none;
+            padding: 20px 25px;
+            font-weight: bold;
+            cursor: pointer;
+            font-size: 15px;
+            align-self: stretch;
+            white-space: nowrap;
+        }
+        .btn-add-floating {
+            position: fixed;
+            bottom: 25px;
+            left: 25px;
+            background-color: var(--accent);
+            color: #0c2d48;
+            border: none;
+            padding: 14px 24px;
+            border-radius: 25px;
+            font-weight: bold;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.15);
+            cursor: pointer;
+            z-index: 999;
+        }
+    </style>
+</head>
+<body>
+    <div id="authPage" class="auth-page">
+        <div class="logo-container"><span style="font-size:32px;">📍</span></div>
+        <h2 class="auth-title">آبار المحطة السابعة</h2>
+        <div class="auth-card">
+            <div class="tab-container">
+                <div id="tabLogin" class="tab" onclick="switchTab('login')">دخول</div>
+                <div id="tabRegister" class="tab active" onclick="switchTab('register')">حساب جديد</div>
+            </div>
+            <div id="loginForm" style="display: none;">
+                <div class="form-group"><input type="text" id="loginUser" class="input-control" placeholder="ادخل اسم المستخدم"></div>
+                <div class="form-group"><input type="password" id="loginPass" class="input-control" placeholder="ادخل كلمة السر"></div>
+                <button class="btn-submit" onclick="loginAction()">تسجيل الدخول</button>
+            </div>
+            <div id="registerForm">
+                <div class="form-group"><input type="text" id="regName" class="input-control" placeholder="اسمك الكامل"></div>
+                <div class="form-group"><input type="text" id="regPhone" class="input-control" placeholder="رقم التلفون"></div>
+                <div class="form-group"><input type="text" id="regUser" class="input-control" placeholder="اليوزر"></div>
+                <div class="form-group"><input type="password" id="regPass" class="input-control" placeholder="كلمة السر"></div>
+                <button class="btn-submit" onclick="registerAction()">إرسال طلب الحساب</button>
+            </div>
+            <div class="designer-credit">تصميم المطور: MOHAMED AL-NOOR</div>
+        </div>
+    </div>
+
+    <div id="mainPage" class="main-page">
+        <div class="app-header">
+            <button class="btn-logout" onclick="logoutAction()">خروج</button>
+            <h2 class="header-title">آبار المحطة السابعة</h2>
+            <p style="text-align:center; margin:4px 0 0 0; opacity:0.8;">بإشراف: محمد</p>
+        </div>
+
+        <div id="approvalPanel" class="approval-panel">
+            <strong style="color: #a16207; font-size: 15px;">⚠️ لوحة المشرف محمد: طلبات الحسابات المعلقة</strong>
+            <div id="approvalList"></div>
+        </div>
+
+        <div class="search-wrapper">
+            <div class="search-container-box">
+                <span class="abc-badge">ABC</span>
+                <input type="text" id="searchBox" class="search-input" oninput="searchWells()" placeholder="اكتب رقم البئر">
+                <span style="color:#888;">🔍</span>
+            </div>
+        </div>
+
+        <div class="filter-tabs">
+            <button class="btn-filter" onclick="window.open('https://google.com', '_blank')">الخريطة 🗺️</button>
+            <button class="btn-filter" onclick="orderByNearest()">الأقرب 📍</button>
+            <button id="filter-all" class="btn-filter active" onclick="filterByStatus('all')">الكل <span id="count-all">40</span></button>
+            <button id="filter-haqan" class="btn-filter" onclick="filterByStatus('حقن')">حقن <span id="count-haqan">0</span></button>
+            <button id="filter-mazool" class="btn-filter" onclick="filterByStatus('معزول')">معزولة <span id="count-mazool">0</span></button>
+            <button id="filter-flashing" class="btn-filter" onclick="filterByStatus('فلاشنك')">فلاشنك <span id="count-flashing">0</span></button>
+        </div>
+
+        <div class="wells-count-text"><span id="wellsTotalLabel">40</span> بير</div>
+        <div class="wells-list-wrapper" id="wellsListContainer"></div>
+        <button class="btn-add-floating" onclick="addNewWellAction()">+ بئر جديد</button>
+    </div>
+    <script>
+        // هنا تم تعيين حسابك الحقيقي والوحيد للمدير مع قائمة الانتظار
+        const MASTER_USER = "mnoor2";
+        const MASTER_PASS = "1997";
+        
+        let currentFilter = "all";
+        let currentUserLoggedIn = "";
+
+        let approvedUsers = [
+            { user: "mnoor2", pass: "1997", name: "المشرف محمد", role: "admin" }
+        ];
+
+        let pendingRequests = [];
+        
+        let wellsArray = [
+        { id: "RU-686", link: "https://maps.app.goo.gl/NCATTqjsWd2QrLhE6", status: "حقن" },
+
+        { id: "RU-689", link: "https://goo.gl/maps/sv6VCHxbMgzMDKEu5?g_st=ac", status: "حقن" },
+
+        { id: "Ru-679", link: "https://maps.app.goo.gl/XVsABFSabg13o75L8", status: "حقن" },
+        { id: "RU-337", link: "https://maps.app.goo.gl/D6WV3FLmrfGYh98f6?g_st=ac", status: "معزول" },
+        { id: "RU-340", link: "https://maps.app.goo.gl/tQC3pSqiY8ecGTF29?g_st=ac", status: "حقن" },
+        { id: "RU-284", link: "https://maps.app.goo.gl/NzRtUJS7BYwGtbzW8?g_st=ac", status: "حقن" },
+        { id: "RU-342", link: "https://maps.app.goo.gl/3MGPe71Uch3QT1kg7", status: "فلاشنك" },
+        { id: "RU-301A", link: "https://maps.app.goo.gl/Ya4ipcc3wLk8G2LJ9?g_st=ac", status: "معزول" },
+        { id: "RU-279A", link: "https://maps.app.goo.gl/AUWKun4naDY3BKDB7?g_st=ac", status: "حقن" },
+        { id: "RU-565", link: "https://maps.app.goo.gl/fXLoNZQL3zv34F5S7?g_st=ac", status: "حقن" },
+        { id: "Ru-554", link: "https://maps.app.goo.gl/usfyVDRQvrqioRRx9?g_st=ac", status: "حقن" },
+        { id: "RU-80", link: "https://maps.app.goo.gl/7zpNYeEem7bYN4Ca8?g_st=ac", status: "حقن" },
+        { id: "RU-106", link: "https://maps.app.goo.gl/mtLQ2NbtkidbPQ3C8?g_st=ac", status: "معزول" },
+        { id: "RU-99", link: "https://maps.app.goo.gl/FyXD2ao4mbGNYKA57?g_st=ac", status: "حقن" },
+        { id: "RU-103", link: "https://maps.app.goo.gl/YkJMHjfS8jZyswrF6?g_st=ac", status: "حقن" },
+        { id: "RU-174", link: "https://maps.app.goo.gl/TRhwxeKiDtWvZmcDA?g_st=ac", status: "فلاشنك" },
+        { id: "RU-558", link: "https://maps.app.goo.gl/DrnxKKwiWihnJJM7A?g_st=ac", status: "حقن" },
+        { id: "RU-548", link: "https://maps.app.goo.gl/LfDj6NmXExWp2ZJ29?g_st=ac", status: "حقن" },
+        { id: "RU-535", link: "https://maps.app.goo.gl/MtYxmCqdpDrbxST27?g_st=ac", status: "معزول" },
+        { id: "RU-521", link: "https://maps.app.goo.gl/z3ErnneCmyQtWzQj7?g_st=ac", status: "حقن" },
+        { id: "RU-567", link: "https://maps.app.goo.gl/hECbkSuKykovKoN67?g_st=ac", status: "حقن" },
+        { id: "RU-566", link: "https://maps.app.goo.gl/hGmUHwZKWRAA9EYZ9?g_st=ac", status: "حقن" },
+        { id: "RU-555", link: "https://maps.app.goo.gl/hGmUHwZKWRAA9EYZ9?g_st=ac", status: "حقن" },
+        { id: "RU-634", link: "https://maps.app.goo.gl/ghB7rsHT7VeeG4G16?g_st=ac", status: "حقن" },
+        { id: "RU-557", link: "https://maps.app.goo.gl/UZBVjSf1eX4ug5CBA?g_st=ac", status: "حقن" },
+        { id: "RU-562", link: "https://maps.app.goo.gl/NmuUC2Y1q3DRMZ9E9?g_st=ac", status: "حقن" },
+        { id: "Ru-540", link: "https://maps.app.goo.gl/TsbEf7KFLXAjPC6x5?g_st=ac", status: "حقن" },
+        { id: "Ru-545", link: "https://maps.app.goo.gl/UXZ26HPd2JJn84T99?g_st=ac", status: "حقن" },
+        { id: "Ru-550", link: "https://maps.app.goo.gl/ZHUkjnd4PK1CXXcNA?g_st=ac", status: "حقن" },
+        { id: "Ru-626", link: "https://maps.app.goo.gl/wHEyihyJgjekuHjL8?g_st=ac", status: "حقن" },
+        { id: "Ru-569", link: "https://maps.app.goo.gl/vHXD8CrC2BWtjPx28?g_st=ac", status: "حقن" },
+        { id: "Ru-568", link: "https://goo.gl/maps/aU9qBJADXaoh4k9e7?g_st=ac", status: "حقن" },
+        { id: "Ru-563z", link: "https://maps.app.goo.gl/NLfD5VtkvvW8z6Ax9?g_st=ac", status: "حقن" },
+        { id: "Ru-552", link: "https://maps.app.goo.gl/bzbsm1yFthDrmUYK6?g_st=ac", status: "حقن" },
+        { id: "RU-598", link: "https://maps.app.goo.gl/Fwf2q8QBNw6ov7g29?g_st=ac", status: "حقن" },
+        { id: "RU-687", link: "https://maps.app.goo.gl/V4UBvGphx2SVxBce6?g_st=ac", status: "حقن" },
+        { id: "RU-681", link: "https://maps.app.goo.gl/B9CCNyxAMESZr2tC6", status: "حقن" }, 
+        { id: "RU-564", link: "https://maps.app.goo.gl/eyNQaW4P8vgTx5qr7?g_st=ac", status: "حقن" },
+        { id: "RU-644", link: "https://maps.app.goo.gl/Luv9TduAJTQ8v1HQ6?g_st=ac", status: "حقن" },
+        { id: "RU-664", link: "https://maps.app.goo.gl/EKNv4DEUpy1Nvos78?g_st=ac", status: "حقن" },
+        { id: "RU-666", link: "https://goo.gl/maps/hX9Bfxp24vqWQq289?g_st=ac", status: "حقن" },
+        { id: "MF13", link: "https://maps.app.goo.gl/e6NtxViKbCoQ6P5x9?g_st=ac", status: "حقن" },
+        { id: "MF14", link: "https://maps.app.goo.gl/QwyFoDqXYyyVwUoy8?g_st=ac", status: "حقن" },
+        { id: "MF15", link: "https://maps.app.goo.gl/kbgmnHdqkN1ECh2VA?g_st=ac", status: "حقن" }
+        
+
+    ];
+        function switchTab(t) {
+            document.getElementById('tabLogin').className = t==='login'?'tab active':'tab';
+            document.getElementById('tabRegister').className = t==='register'?'tab active':'tab';
+            document.getElementById('loginForm').style.display = t==='login'?'block':'none';
+            document.getElementById('registerForm').style.display = t==='register'?'block':'none';
+        }
+
+        function registerAction() {
+            const name = document.getElementById('regName').value;
+            const phone = document.getElementById('regPhone').value;
+            const user = document.getElementById('regUser').value;
+            const pass = document.getElementById('regPass').value;
+            if(!name || !user || !pass) { alert("الرجاء ملء الحقول الأساسية!"); return; }
+
+            pendingRequests.push({ name: name, phone: phone, user: user, pass: pass });
+            alert(`تم إرسال طلبك بنجاح يا ${name}!\nلن تتمكن من الدخول حتى يوافق المشرف محمد على تفعيل حسابك.`);
+            switchTab('login');
+        }
+
+        function loginAction() {
+            const uIn = document.getElementById('loginUser').value;
+            const pIn = document.getElementById('loginPass').value;
+            const foundUser = approvedUsers.find(u => u.user === uIn && u.pass === pIn);
+
+            if (foundUser) {
+                currentUserLoggedIn = foundUser.user;
+                document.getElementById('authPage').style.display = 'none';
+                document.getElementById('mainPage').style.display = 'block';
+                
+                if(foundUser.role === 'admin') {
+                    document.getElementById('approvalPanel').style.display = 'block';
+                    renderApprovalList();
+                } else {
+                    document.getElementById('approvalPanel').style.display = 'none';
+                }
+                updateCounts(); buildList(wellsArray);
+            } else {
+                if(pendingRequests.some(u => u.user === uIn)) {
+                    alert("حسابك قيد الانتظار! يرجى التواصل مع المشرف محمد لتفعيل حسابك.");
+                } else { alert("اليوزر أو كلمة السر غير صحيحة!"); }
+            }
+        }
+
+        function logoutAction() {
+            document.getElementById('mainPage').style.display = 'none';
+            document.getElementById('authPage').style.display = 'flex';
+        }
+
+        function renderApprovalList() {
+            const listContainer = document.getElementById('approvalList');
+            listContainer.innerHTML = "";
+            if(pendingRequests.length === 0) {
+                listContainer.innerHTML = "<p style='color:#713f12; font-size:13px; margin:5px 0 0 0;'>لا توجد طلبات معلقة جديدة حالياً.</p>";
+                return;
+            }
+            pendingRequests.forEach((req, index) => {
+                const item = document.createElement('div');
+                item.className = 'approval-item';
+                item.innerHTML = `
+                    <div style="text-align:right;">
+                        <strong style="font-size:14px;">${req.name}</strong>
+                        <div style="font-size:11px; color:#666;">يوزر: ${req.user} | هاتف: ${req.phone}</div>
+                    </div>
+                    <div>
+                        <button class="btn-approve" onclick="approveUser(${index})">موافقة ✓</button>
+                        <button class="btn-reject" onclick="rejectUser(${index})">رفض ✕</button>
+                    </div>
+                `;
+                listContainer.appendChild(item);
+            });
+        }
+
+        function approveUser(index) {
+            const u = pendingRequests[index];
+            approvedUsers.push({ user: u.user, pass: u.pass, name: u.name, role: "user" });
+            alert(`تم تفعيل حساب (${u.name}) بنجاح!`);
+            pendingRequests.splice(index, 1);
+            renderApprovalList();
+        }
+
+        function rejectUser(index) {
+            alert(`تم رفض طلب الحساب.`);
+            pendingRequests.splice(index, 1);
+            renderApprovalList();
+        }
+
+       function buildList(data) {
+    const container = document.getElementById('wellsListContainer');
+    container.innerHTML = "";
+    data.forEach((w, index) => {
+        const item = document.createElement('div');
+        item.className = `well-item status-${w.status}`;
+        item.innerHTML = `
+            <button class="btn-navigate" onclick="window.open('${w.link}', '_blank')">إلى البئر 🔵</button>
+            <div class="well-right-side">
+                <span class="badge-status badge-${w.status}" onclick="toggleWellStatus(${index})">${w.status}</span>
+                <span class="well-title-text">${w.id}</span>
+            </div>
+        `;
+        container.appendChild(item);
+    });
+}
+
+        function toggleWellStatus(index) {
+            const cur = wellsArray[index].status;
+            wellsArray[index].status = cur === "حقن" ? "معزول" : (cur === "معزول" ? "فلاشنك" : "حقن");
+            updateCounts(); filterByStatus(currentFilter);
+        }
+
+        function updateCounts() {
+            const all = wellsArray.length;
+            document.getElementById('count-all').innerText = all;
+            document.getElementById('count-haqan').innerText = wellsArray.filter(w => w.status === "حقن").length;
+            document.getElementById('count-mazool').innerText = wellsArray.filter(w => w.status === "معزول").length;
+            document.getElementById('count-flashing').innerText = wellsArray.filter(w => w.status === "فلاشنك").length;
+            document.getElementById('wellsTotalLabel').innerText = all;
+        }
+
+        function filterByStatus(status) {
+            currentFilter = status;
+            document.querySelectorAll('.btn-filter').forEach(btn => btn.classList.remove('active'));
+            if(status === 'all') document.getElementById('filter-all').classList.add('active');
+            else if(status === 'حقن') document.getElementById('filter-haqan').classList.add('active');
+            else if(status === 'معزول') document.getElementById('filter-mazool').classList.add('active');
+            else if(status === 'فلاشنك') document.getElementById('filter-flashing').classList.add('active');
+            buildList(status === "all" ? wellsArray : wellsArray.filter(w => w.status === status));
+        }
+
+        function searchWells() {
+            const q = document.getElementById('searchBox').value.toUpperCase();
+            buildList(wellsArray.filter(w => w.id.toUpperCase().includes(q)));
+        }
+
+        function openMaps(lat, lng) { window.open(`https://google.com{lat},${lng}`, '_blank'); }
+
+        function orderByNearest() {
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition((pos) => {
+                    const lat = pos.coords.latitude, lng = pos.coords.longitude;
+                    wellsArray.sort((a, b) => (Math.pow(a.lat-lat,2)+Math.pow(a.lng-lng,2)) - (Math.pow(b.lat-lat,2)+Math.pow(b.lng-lng,2)));
+                    filterByStatus(currentFilter);
+                    alert("تم ترتيب الآبار من الأقرب لموقعك حالياً للأبعد!");
+                }, () => alert("يرجى تفعيل الـ GPS في الهاتف!"));
+            }
+        }
+
+        function addNewWellAction() {
+            let n = prompt("أدخل رقم البئر الجديد:");
+            if(n) { wellsArray.unshift({ id: n.toUpperCase(), lat: 30.0825, lng: 47.4124, status: "حقن" }); updateCounts(); filterByStatus(currentFilter); }
+        }
+    </script>
+</body>
+</html>

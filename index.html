@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>آبار المحطة السابعة</title>
     <link rel="manifest" href="manifest.json">
+<script src="https://jsdelivr.net"></script>
     <meta name="theme-color" content="#0b2545">
     <style>
         :root {
@@ -511,6 +512,36 @@
         function addNewWellAction() {
             let n = prompt("أدخل رقم البئر الجديد:");
             if(n) { wellsArray.unshift({ id: n.toUpperCase(), lat: 30.0825, lng: 47.4124, status: "حقن" }); updateCounts(); filterByStatus(currentFilter); }
+        const SUPABASE_URL = "https://supabase.co";
+const SUPABASE_KEY = "sb_publishable_n-8EGELPnm4Y4Sh1VKGxcQ_sZMIX9GU";
+const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+async function syncWellsFromSupabase() {
+    let { data: dbWells, error } = await supabaseClient.from('Wells').select('*');
+    if (dbWells && dbWells.length > 0) {
+        dbWells.forEach(dbWell => {
+            let localWell = wellsArray.find(w => w.id === dbWell.Well_Number);
+            if (localWell) {
+                if (dbWell.Status === 'Close' || dbWell.Status === 'معزولة' || dbWell.Status === 'مغلق') { localWell.status = "ع"; }
+                else if (dbWell.Status === 'Injection' || dbWell.Status === 'حقن') { localWell.status = "ح"; }
+                else if (dbWell.Status === 'Flushing' || dbWell.Status === 'فلاشنك') { localWell.status = "ف"; }
+            }
+        });
+        if (typeof updateCounts === "function") updateCounts();
+        if (typeof filterByStatus === "function") filterByStatus(currentFilter);
+    }
+}
+
+async function changeWellStatusInDb(wellId, newArabicStatus) {
+    let dbStatus = "Injection";
+    if (newArabicStatus === "ع") dbStatus = "Close";
+    if (newArabicStatus === "ف") dbStatus = "Flushing";
+    await supabaseClient.from('Wells').update({ Status: dbStatus }).eq('Well_Number', wellId);
+}
+
+supabaseClient.channel('schema-db-changes').on('postgres_changes', { event: '*', schema: 'public', table: 'Wells' }, (payload) => { syncWellsFromSupabase(); }).subscribe();
+syncWellsFromSupabase();
+
         }
     </script>
 </body>

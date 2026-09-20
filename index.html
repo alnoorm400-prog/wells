@@ -539,9 +539,20 @@ async function changeWellStatusInDb(wellId, newArabicStatus) {
     await supabaseClient.from('Wells').update({ Status: dbStatus }).eq('Well_Number', wellId);
 }
 
-supabaseClient.channel('schema-db-changes').on('postgres_changes', { event: '*', schema: 'public', table: 'Wells' }, (payload) => { syncWellsFromSupabase(); }).subscribe();
-syncWellsFromSupabase();
-
+supabaseClient
+    .channel('schema-db-changes')
+    .on('postgres_changes', { event: 'UPDATE', schema: 'public', table: 'Wells' }, (payload) => {
+        let dbWell = payload.new;
+        let localWell = wellsArray.find(w => w.id === dbWell.Well_Number);
+        if (localWell) {
+            if (dbWell.Status === 'Close' || dbWell.Status === 'معزولة' || dbWell.Status === 'مغلق') localWell.status = "ع";
+            else if (dbWell.Status === 'Injection' || dbWell.Status === 'حقن') localWell.status = "ح";
+            else if (dbWell.Status === 'Flushing' || dbWell.Status === 'فلاشنك') localWell.status = "ف";
+            if (typeof updateCounts === "function") updateCounts();
+            if (typeof filterByStatus === "function") filterByStatus(currentFilter);
+        }
+    })
+    .subscribe();
         }
     </script>
 </body>
